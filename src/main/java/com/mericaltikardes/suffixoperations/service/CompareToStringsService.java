@@ -2,7 +2,6 @@ package com.mericaltikardes.suffixoperations.service;
 
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.*;
 
@@ -21,7 +20,7 @@ public class CompareToStringsService {
             list.add(new FlexString(text, false, 0));
         }
         for (int i = 0; i < list.size(); i++) {
-            startCompare(list, i, Collections.emptyList());
+            startCompare(copyList(list), i, Collections.emptyList());
         }
         Optional<String> result = results.stream().max(Comparator.comparing(String::length));
         if (!anyFound) {
@@ -30,15 +29,6 @@ public class CompareToStringsService {
         results.clear();
         anyFound = false;
         return result;
-    }
-
-    /*ahmet eve gel
-      eve saçmalama gel ama
-     */
-    public static void main(String[] args) {
-        CompareToStringsService compareToStringsService = new CompareToStringsService();
-        Optional<String> string = compareToStringsService.getResult("ahmet eve gel", "ama ama ama ama", "Mehmet Selam gel", "ekmek almadan gel gelme");
-        string.ifPresent(System.out::println);
     }
 
     public void startCompare(List<FlexString> texts, int parentIndex, List<String> addingWord) {
@@ -53,13 +43,15 @@ public class CompareToStringsService {
 
             Pair<Integer, Integer> sameWordIndexes = getSameWordIndex(parentText.getText(), parentText.startIndex, currentText.getText(), 0);
 
-
             String[] currentList = currentText.getText().split(" ");
             if (sameWordIndexes == null) continue;
 
             ArrayList<String> wordList = new ArrayList<>();
             wordList.addAll(addingWord);
-            wordList.addAll(sentenceWordSplitter(parentText.getText(), parentText.startIndex, sameWordIndexes.getFirst()));
+
+            wordList.addAll(sentenceWordSplitter(parentText.getText(), parentText.startIndex, sameWordIndexes.getFirst() - 1));
+            wordList.add(currentList[sameWordIndexes.getSecond()]);
+
             anyCompared = true;
             anyFound = true;
             if (sameWordIndexes.getSecond() == currentList.length - 1) {
@@ -67,12 +59,10 @@ public class CompareToStringsService {
                 continue;
             }
             List<FlexString> copiedList = copyList(texts);
-
             copiedList.get(i).setStartIndex(sameWordIndexes.getSecond() + 1);
             startCompare(copiedList, i, wordList);
             //Swıc parentin ortak index;
         }
-
         if (!anyCompared) {
             ArrayList<String> wordList = new ArrayList<>();
             wordList.addAll(addingWord);
@@ -90,21 +80,34 @@ public class CompareToStringsService {
         return result;
     }
 
+    private static boolean isSameWithoutSuffix(String parent, String current) {
+        int minLength = Math.min(parent.length(), current.length());
+        for (int i = 0; i < minLength; i++) {
+            if (parent.charAt(i) != current.charAt(i)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private static Pair<Integer, Integer> getSameWordIndex(String parentText, int parentStartIndex, String currentText, int currentStartIndex) {
         List<String> parentList = new ArrayList<>();
         List<String> currentList = new ArrayList<>();
         String[] parentSplit = parentText.split(" ");
         String[] currentSplit = currentText.split(" ");
         for (int i = parentStartIndex; i < parentSplit.length; i++) {
+
             parentList.add(parentSplit[i].replaceAll("\\p{Punct}", "").toLowerCase(Locale.ROOT));
         }
         for (int i = currentStartIndex; i < currentSplit.length; i++) {
             currentList.add(currentSplit[i].replaceAll("\\p{Punct}", "").toLowerCase(Locale.ROOT));
+
+
         }
         for (int parentIndex = 0; parentIndex < parentList.size(); parentIndex++) {
             for (int currentIndex = 0; currentIndex < currentList.size(); currentIndex++) {
-                if (parentList.get(parentIndex).equals(currentList.get(currentIndex))) {
-                    return Pair.of(parentIndex+parentStartIndex, currentIndex+currentStartIndex);
+                if (isSameWithoutSuffix(parentList.get(parentIndex), currentList.get(currentIndex))) {
+                    return Pair.of(parentIndex + parentStartIndex, currentIndex + currentStartIndex);
                 }
             }
         }

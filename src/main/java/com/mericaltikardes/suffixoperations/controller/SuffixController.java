@@ -42,7 +42,7 @@ public class SuffixController {
     public String compareToStrings(@RequestParam("myStrings") List<String> myStrings, ModelMap model) {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
-        Optional<String> result = compareToStringsService.getResult(myStrings);
+        Optional<String> result = compareToStringsService.getResult(myStrings.stream().map(String::trim).toList());
 
         inputStringsToSaved = new ArrayList<>(myStrings);
         if (result.isPresent()) {
@@ -52,13 +52,16 @@ public class SuffixController {
             model.put("result", "No Matching");
         }
         stopWatch.stop();
-        long resultResponseTime = stopWatch.getTotalTimeNanos();
+        double resultResponseTime = (double)stopWatch.getTotalTimeNanos()/1_000_000;
         model.put("resultResponseTime",resultResponseTime);
         return "page";
     }
 
     @RequestMapping("/save")
     public String saveResult(ModelMap model) {
+        if(inputStringsToSaved.isEmpty()){
+            return "redirect:page";
+        }
         SuffixDatas suffixDatas = new SuffixDatas(inputStringsToSaved, resultToSaved);
         mongoRepository.save(suffixDatas);
         return "redirect:page";
