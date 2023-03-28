@@ -18,7 +18,7 @@
 
             <button type="button" class="btn btn-primary  mt-1" style="margin-left: 10px" onclick="addInput()">Ekle</button>
             <button type="button" class="btn btn-primary  mt-1" onclick="delInput()">delete</button>
-            <button type="submit" class="btn btn-primary mt-1">Gonder</button>
+            <button type="submit" class="btn btn-primary mt-1">Birlestir</button>
             <a href="save" class="btn btn-primary mt-1">Kaydet</a>
 
             <div id="input-container">

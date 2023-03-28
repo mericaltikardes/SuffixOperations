@@ -107,7 +107,6 @@ public class CompareToStringsService {
         for (int i = currentStartIndex; i < currentSplit.length; i++) {
             currentList.add(currentSplit[i].replaceAll("\\p{Punct}", "").toLowerCase(Locale.ROOT));
 
-
         }
         for (int parentIndex = 0; parentIndex < parentList.size(); parentIndex++) {
             for (int currentIndex = 0; currentIndex < currentList.size(); currentIndex++) {

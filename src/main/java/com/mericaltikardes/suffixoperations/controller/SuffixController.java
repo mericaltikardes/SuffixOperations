@@ -23,8 +23,6 @@ public class SuffixController {
                             List<String> inputStringsToSaved) {
         this.compareToStringsService = compareToStringsService;
         this.inputStringsToSaved = inputStringsToSaved;
-
-
     }
 
     @RequestMapping(value = "/page", method = RequestMethod.GET)
