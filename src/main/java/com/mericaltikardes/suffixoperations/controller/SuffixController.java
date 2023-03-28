@@ -1,7 +1,6 @@
 package com.mericaltikardes.suffixoperations.controller;
 
 import com.mericaltikardes.suffixoperations.model.SuffixDatas;
-import com.mericaltikardes.suffixoperations.repository.MongoJpa;
 import com.mericaltikardes.suffixoperations.service.CompareToStringsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -9,24 +8,19 @@ import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttributes;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Controller
 public class SuffixController {
+    private final CompareToStringsService compareToStringsService;
+    private List<String> inputStringsToSaved;
+    private String resultToSaved = " ";
+    private double resultResponseTime;
 
-    MongoJpa mongoRepository;
-    CompareToStringsService compareToStringsService;
-    List<String> inputStringsToSaved;
-    String resultToSaved = " ";
-
-
-    public SuffixController(MongoJpa mongoRepository, CompareToStringsService compareToStringsService,
+    public SuffixController(CompareToStringsService compareToStringsService,
                             List<String> inputStringsToSaved) {
-        this.mongoRepository = mongoRepository;
         this.compareToStringsService = compareToStringsService;
         this.inputStringsToSaved = inputStringsToSaved;
 
@@ -52,18 +46,18 @@ public class SuffixController {
             model.put("result", "No Matching");
         }
         stopWatch.stop();
-        double resultResponseTime = (double)stopWatch.getTotalTimeNanos()/1_000_000;
-        model.put("resultResponseTime",resultResponseTime);
+        resultResponseTime = (double) stopWatch.getTotalTimeNanos() / 1_000_000;
+        model.put("resultResponseTime", resultResponseTime);
         return "page";
     }
 
     @RequestMapping("/save")
-    public String saveResult(ModelMap model) {
-        if(inputStringsToSaved.isEmpty()){
+    public String saveResult() {
+        if (inputStringsToSaved.isEmpty()) {
             return "redirect:page";
         }
-        SuffixDatas suffixDatas = new SuffixDatas(inputStringsToSaved, resultToSaved);
-        mongoRepository.save(suffixDatas);
+        SuffixDatas suffixDatas = new SuffixDatas(inputStringsToSaved, resultToSaved, resultResponseTime);
+        compareToStringsService.save(suffixDatas);
         return "redirect:page";
     }
 

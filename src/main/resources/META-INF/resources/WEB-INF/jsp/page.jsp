@@ -31,7 +31,6 @@
     </form>
 </div>
 
-
 <script>
     function delInput(){
         var container = document.getElementById("input-container");

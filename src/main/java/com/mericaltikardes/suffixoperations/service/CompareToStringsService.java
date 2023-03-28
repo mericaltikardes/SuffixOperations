@@ -1,14 +1,20 @@
 package com.mericaltikardes.suffixoperations.service;
 
+import com.mericaltikardes.suffixoperations.model.SuffixDatas;
+import com.mericaltikardes.suffixoperations.repository.MongoJpa;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
-
 import java.util.*;
 
 @Service
 public class CompareToStringsService {
     ArrayList<String> results = new ArrayList<>();
+    private MongoJpa mongoRepository;
     boolean anyFound = false;
+
+    public CompareToStringsService(MongoJpa mongoRepository) {
+        this.mongoRepository = mongoRepository;
+    }
 
     public Optional<String> getResult(String... strings) {
         return getResult(Arrays.stream(strings).toList());
@@ -51,7 +57,6 @@ public class CompareToStringsService {
 
             wordList.addAll(sentenceWordSplitter(parentText.getText(), parentText.startIndex, sameWordIndexes.getFirst() - 1));
             wordList.add(currentList[sameWordIndexes.getSecond()]);
-
             anyCompared = true;
             anyFound = true;
             if (sameWordIndexes.getSecond() == currentList.length - 1) {
@@ -114,6 +119,9 @@ public class CompareToStringsService {
         return null;
     }
 
+    public void save(SuffixDatas suffixDatas) {
+        mongoRepository.save(suffixDatas);
+    }
 
     static class FlexString {
         private String text;
@@ -158,7 +166,6 @@ public class CompareToStringsService {
         }
 
     }
-
     public static List<FlexString> copyList(List<FlexString> list) {
         List<FlexString> result = new ArrayList<>();
         for (FlexString flex : list) {
