@@ -9,15 +9,28 @@ Spring Boot Starter Data Jpa: Starter for using Spring Data JPA with Hibernate.
 </li>
 
 <li>
-H2: In-memory database for development and testing purposes.
+MongoDB: MongoDB is a popular, open-source NoSQL database that uses a document-oriented model for storing and retrieving data, allowing for flexible and scalable data management.
 </li>
-
-<li>
-Spring Boot Starter Security: Starter for using Spring Security.
-</li>
-
 <li>
 Tomcat Embed Jasper: Embeddable Apache Tomcat JSP engine with Jasper.
 </li>
 </ul>
+
 <h2>Application Interface</h2>
+<table style="width: 100%; table-layout: fixed;">
+  <tr>
+    <td style="width: 50%;">
+      <img src="https://github.com/mericaltikardes/SuffixOperations/blob/master/2.png" alt="Resim 1" width="100%" height="auto">
+    </td>
+    <td style="width: 50%;">
+      <img src="https://github.com/mericaltikardes/SuffixOperations/blob/master/3.png" alt="Resim 2" width="100%" height="auto">
+    </td>
+    <tr>
+    <td style="width: 50%;">
+      <img src="https://github.com/mericaltikardes/SuffixOperations/blob/master/4.png" alt="Resim 1" width="100%" height="auto">
+    </td>
+    <td style="width: 50%;">
+      <img src="https://github.com/mericaltikardes/SuffixOperations/blob/master/5.png" alt="Resim 2" width="100%" height="auto">
+    </td>
+</table>
+
